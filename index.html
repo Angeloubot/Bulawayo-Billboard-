@@ -100,8 +100,8 @@ async function loadLiveSongs() {
   }
 }
 
-loadLiveSongs();
-<script>
+
+
   const SUPABASE_URL = "https://puiougudplvbhdrxacji.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_wHq4Dhwpwjm82OuWPg61XA_QqHshLrN";
 
@@ -124,7 +124,39 @@ supabaseClient
       alert("Database connected successfully!");
     }
   });
+loadLiveSongs();
 
+document.getElementById("fan-send-code").addEventListener("click", async () => {
+  const email = document.getElementById("fan-email").value.trim();
+  const message = document.getElementById("fan-auth-message");
+  const button = document.getElementById("fan-send-code");
+
+  if (!email) {
+    message.textContent = "Please enter your email address.";
+    return;
+  }
+
+  button.disabled = true;
+  message.textContent = "Sending login link...";
+
+  try {
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: "https://angeloubot.github.io/Bulawayo-Billboard-/"
+      }
+    });
+
+    message.textContent = error
+      ? "Could not send login link: " + error.message
+      : "Check your email for your login link.";
+  } catch (err) {
+    message.textContent = "Something went wrong. Please try again.";
+  } finally {
+    button.disabled = false;
+  }
+});
+      
 </script>
 
 <section id="fan-auth" style="max-width:420px;margin:24px auto;padding:20px;background:#181818;color:white;border-radius:12px;font-family:Arial,sans-serif">
